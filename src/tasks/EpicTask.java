@@ -1,13 +1,16 @@
+package tasks;
+
+import enums.Status;
+import enums.Type;
+
 import java.util.ArrayList;
 
 public class EpicTask extends Task {
     private ArrayList<SubTask> subTasks;
-    private Status status;
 
-    public EpicTask(int id, String name, ArrayList<SubTask> subTasks, Status status) {
-        super(id, name);
+    public EpicTask(int id, String name, ArrayList<SubTask> subTasks, Status status, String description) {
+        super(id, name, status, description);
         this.subTasks = subTasks;
-        this.status = status;
     }
 
     public void removeSubTask(int i) {
@@ -17,6 +20,7 @@ public class EpicTask extends Task {
     public void addSubTask(SubTask subTask) {
         subTasks.add(subTask);
     }
+
     public int getSizeSubTasks() {
         return subTasks.size();
     }
@@ -25,26 +29,25 @@ public class EpicTask extends Task {
         return subTasks.get(i).getId();
     }
 
+    public int getIndexInSubTasksById(int id) {
+        int i;
+        for (i = 0; i < subTasks.size(); i++) {
+            if (subTasks.get(i).getId() == id)
+                break;
+        }
+        return i;
+    }
+
+    public SubTask getSubTask(int i) {
+        return subTasks.get(i);
+    }
+
+    public ArrayList<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
     public void setStatusSubTask(int i, Status newStatus) {
         subTasks.get(i).setStatus(newStatus);
-    }
-    public EpicTask updateStatus() {
-        Status status = Status.NEW;
-        int counterDone = 0;
-        for (SubTask subTask: subTasks) {
-            if (subTask.getStatus() == Status.IN_PROGRESS) {
-                status = subTask.getStatus();
-                break;
-            } else if (subTask.getStatus() == Status.DONE) {
-                counterDone++;
-            }
-        }
-        if (counterDone == subTasks.size() && subTasks.size() != 0) {
-            status = Status.DONE;
-        } else if (counterDone > 0 && counterDone < subTasks.size()) {
-            status = Status.IN_PROGRESS;
-        }
-        return new EpicTask(this.getId(), this.getName(), this.subTasks, status);
     }
 
     @Override
@@ -59,7 +62,7 @@ public class EpicTask extends Task {
 
     @Override
     public String toString() {
-        return "EpicTask{" +
+        return "tasks.EpicTask{" +
                 "id = " + getId() + "," +
                 "status = " + getStatus() + "," +
                 "subtasks = " + subTasks +
@@ -68,9 +71,15 @@ public class EpicTask extends Task {
 
     public static class Creator {
         private String name;
+        private String description;
 
-        public Creator(String name) {
+        public Creator(String name, String description) {
             this.name = name;
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
         }
 
         public String getName() {

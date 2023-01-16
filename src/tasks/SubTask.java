@@ -1,22 +1,14 @@
+package tasks;
+
+import enums.Status;
+import enums.Type;
+
 public class SubTask extends Task {
-    private Status status;
     private final EpicTask epicTask;
 
-    public SubTask(int id, String name, Status status, EpicTask epicTask) {
-        super(id, name);
-        this.status = status;
+    public SubTask(int id, String name, Status status, EpicTask epicTask, String description) {
+        super(id, name, status, description);
         this.epicTask = epicTask;
-    }
-
-    public SubTask updateStatus(Status newStatus) {
-        SubTask subTask = new SubTask(this.getId(), this.getName(), newStatus, this.epicTask);
-        for (int i = 0; i < this.epicTask.getSizeSubTasks(); i++) {
-            int key = this.epicTask.getIdSubTask(i);
-            if (key == subTask.getId()) {
-                this.epicTask.setStatusSubTask(i, newStatus);
-            }
-        }
-        return subTask;
     }
 
     public EpicTask getEpicTask() {
@@ -39,20 +31,23 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{" +
+        return "tasks.SubTask{" +
                 "id = " + getId() +
                 ", status = " + getStatus() +
                 ", name = '" + getName() + '\'' +
+                ", description = '" + getDescription() + '\'' +
                 "}";
     }
 
     public static class Creator {
         private String name;
-        private  EpicTask epicTask;
+        private EpicTask epicTask;
+        private String description;
 
-        public Creator(String name, EpicTask epicTask) {
+        public Creator(String name, String description, EpicTask epicTask) {
             this.name = name;
             this.epicTask = epicTask;
+            this.description = description;
         }
 
         public EpicTask getEpicTask() {
@@ -61,6 +56,10 @@ public class SubTask extends Task {
 
         public String getName() {
             return name;
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 }
