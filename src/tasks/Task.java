@@ -5,8 +5,8 @@ import enums.Type;
 
 public abstract class Task {
     private final int id;
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     protected Status status;
 
     public Task(int id, String name, Status status, String description) {
@@ -29,6 +29,8 @@ public abstract class Task {
     }
 
     public abstract Status getStatus();
+
+    public abstract void setStatus(Status status);
 
     public abstract Type getType();
 }

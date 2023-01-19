@@ -9,6 +9,11 @@ public class SingleTask extends Task {
     }
 
     @Override
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    @Override
     public Status getStatus() {
         return status;
     }
@@ -28,21 +33,4 @@ public class SingleTask extends Task {
                 "}";
     }
 
-    public static class Creator {
-        private String name;
-        private String description;
-
-        public Creator(String name, String description) {
-            this.name = name;
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 }

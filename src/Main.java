@@ -9,8 +9,8 @@ public class Main {
         Manager manager = new Manager();
 
         // Create 2 new single task
-        manager.saveNewSingleTask(new SingleTask.Creator("First single task", ""));  // id 1
-        manager.saveNewSingleTask(new SingleTask.Creator("Second single task", ""));  // id 2
+        manager.saveNewSingleTask("First single task", "");  // id 1
+        manager.saveNewSingleTask("Second single task", "");  // id 2
 
         // Change status single task
         SingleTask singleTask = manager.getSingleTaskById(1);
@@ -21,12 +21,12 @@ public class Main {
         System.out.println(manager.getAllSingleTasks());
 
         // Create first epic task
-        manager.saveNewEpicTask(new EpicTask.Creator("Epic(1)", ""));  // id 3
+        manager.saveNewEpicTask("Epic(1)", "");  // id 3
         EpicTask epicTask = manager.getEpicTaskById(3);
 
         // Create two subtasks by Epic(1)
-        manager.saveNewSubTask(new SubTask.Creator("Sub 1 by Epic(1)", "", epicTask));  // id 4
-        manager.saveNewSubTask(new SubTask.Creator("Sub 2 by Epic(1)", "", epicTask));  // id 5
+        manager.saveNewSubTask("Sub 1 by Epic(1)", "", epicTask.getId());  // id 4
+        manager.saveNewSubTask("Sub 2 by Epic(1)", "", epicTask.getId());  // id 5
 
         // Change status first subtask
         SubTask subTask = manager.getSubTaskById(4);
@@ -40,11 +40,11 @@ public class Main {
         System.out.println(manager.getSubFromEpic(epicTask));
 
         // Create second epic task
-        manager.saveNewEpicTask(new EpicTask.Creator("Epic(2)", ""));  // id 6
+        manager.saveNewEpicTask("Epic(2)", "");  // id 6
         epicTask = manager.getEpicTaskById(6);
 
         // Create one subtask by Epic(2)
-        manager.saveNewSubTask(new SubTask.Creator("Sub 1 by Epic(2)", "", epicTask));  // id 7
+        manager.saveNewSubTask("Sub 1 by Epic(2)", "", epicTask.getId());  // id 7
 
         // Change status subtask
         subTask = manager.getSubTaskById(7);
@@ -55,16 +55,16 @@ public class Main {
         System.out.println(manager.getAllEpicTasks());
 
         // Delete single task
-        manager.deleteByIdAndUpdate(2);
+        manager.deleteSingleById(2);
 
         /*
             Delete epic task
             If delete an epic, the subtasks of this epic is also deleted
          */
-        manager.deleteByIdAndUpdate(6);
+        manager.deleteEpicById(6);
 
         // Delete one subtask by Epic(1)
-        manager.deleteByIdAndUpdate(5);
+        manager.deleteSubById(5);
 
         // Output
         System.out.println("\tAfter delete single task, Epic(2) and Sub 2 by Epic(1)");
@@ -80,6 +80,8 @@ public class Main {
             If epic haven`t god subs, epic status becomes NEW
          */
         manager.clearSubTasks();
+        epicTask = manager.getEpicTaskById(3);
+        manager.updateEpicStatus(epicTask);
 
         // Output
         System.out.println("\tFinal");

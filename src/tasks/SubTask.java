@@ -4,15 +4,15 @@ import enums.Status;
 import enums.Type;
 
 public class SubTask extends Task {
-    private final EpicTask epicTask;
+    private final int epicTaskId;
 
-    public SubTask(int id, String name, Status status, EpicTask epicTask, String description) {
+    public SubTask(int id, String name, Status status, int epicTask, String description) {
         super(id, name, status, description);
-        this.epicTask = epicTask;
+        this.epicTaskId = epicTask;
     }
 
-    public EpicTask getEpicTask() {
-        return epicTask;
+    public int getEpicTaskId() {
+        return epicTaskId;
     }
 
     public void setStatus(Status status) {
@@ -37,29 +37,5 @@ public class SubTask extends Task {
                 ", name = '" + getName() + '\'' +
                 ", description = '" + getDescription() + '\'' +
                 "}";
-    }
-
-    public static class Creator {
-        private String name;
-        private EpicTask epicTask;
-        private String description;
-
-        public Creator(String name, String description, EpicTask epicTask) {
-            this.name = name;
-            this.epicTask = epicTask;
-            this.description = description;
-        }
-
-        public EpicTask getEpicTask() {
-            return epicTask;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getDescription() {
-            return description;
-        }
     }
 }
