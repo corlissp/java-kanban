@@ -80,8 +80,6 @@ public class Main {
             If epic haven`t god subs, epic status becomes NEW
          */
         manager.clearSubTasks();
-        epicTask = manager.getEpicTaskById(3);
-        manager.updateEpicStatus(epicTask);
 
         // Output
         System.out.println("\tFinal");

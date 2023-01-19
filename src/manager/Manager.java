@@ -126,8 +126,9 @@ public class Manager {
 
     public void clearSubTasks() {
         subTasks.clear();
-        for(EpicTask epic: epicTasks.values()) {
+        for (EpicTask epic: epicTasks.values()) {
             epic.clearSubtasks();
+            updateEpicStatus(epic);
         }
     }
 
