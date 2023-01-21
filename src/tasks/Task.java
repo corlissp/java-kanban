@@ -5,8 +5,8 @@ import enums.Type;
 
 public abstract class Task {
     private final int id;
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
     protected Status status;
 
     public Task(int id, String name, Status status, String description) {

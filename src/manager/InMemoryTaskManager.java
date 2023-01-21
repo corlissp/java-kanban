@@ -5,6 +5,7 @@ import tasks.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private final TaskIdGenerator taskIdGenerator;
@@ -86,16 +87,13 @@ public class InMemoryTaskManager implements TaskManager {
         for (int i = 0; i < epicTask.getSizeSubTasks(); i++) {
             SubTask subTask = subTasks.get(epicTask.getSubTaskId(i));
             list.add(subTask);
-            historyManager.add(subTask);
         }
         return list;
     }
 
     @Override
     public EpicTask getEpicFromSub(SubTask subTask) {
-        EpicTask epicTask = epicTasks.get(subTask.getEpicTaskId());
-        historyManager.add(epicTask);
-        return epicTask;
+        return epicTasks.get(subTask.getEpicTaskId());
     }
 
     @Override
@@ -125,8 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicTasks.get(id) != null) {
             EpicTask epic = epicTasks.get(id);
             ArrayList<Integer> subsId = epic.getSubTasks();
-            for (int i = 0; i < subsId.size(); i++) {
-                int subId = subsId.get(i);
+            for (Integer subId : subsId) {
                 subTasks.remove(subId);
             }
             epicTasks.remove(id);
@@ -162,49 +159,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     public ArrayList<Task> getAllTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
-        for (Task task : singleTasks.values()) {
-            tasks.add(task);
-            historyManager.add(task);
-
-        }
-        for (Task task : epicTasks.values()) {
-            tasks.add(task);
-            historyManager.add(task);
-        }
-        for (Task task : subTasks.values()) {
-            tasks.add(task);
-            historyManager.add(task);
-        }
+        tasks.addAll(singleTasks.values());
+        tasks.addAll(epicTasks.values());
+        tasks.addAll(subTasks.values());
         return tasks;
     }
     @Override
     public ArrayList<SingleTask> getAllSingleTasks() {
-        ArrayList<SingleTask> tasks = new ArrayList<>();
-        for (SingleTask task : singleTasks.values()) {
-            tasks.add(task);
-            historyManager.add(task);
-        }
-        return tasks;
+        return new ArrayList<>(singleTasks.values());
     }
 
     @Override
     public ArrayList<SubTask> getAllSubTasks() {
-        ArrayList<SubTask> tasks = new ArrayList<>();
-        for (SubTask task : subTasks.values()) {
-            tasks.add(task);
-            historyManager.add(task);
-        }
-        return tasks;
+        return new ArrayList<>(subTasks.values());
     }
 
     @Override
     public ArrayList<EpicTask> getAllEpicTasks() {
-        ArrayList<EpicTask> tasks = new ArrayList<>();
-        for (EpicTask task : epicTasks.values()) {
-            tasks.add(task);
-            historyManager.add(task);
-        }
-        return tasks;
+        return new ArrayList<>(epicTasks.values());
     }
 
     @Override
@@ -223,6 +195,11 @@ public class InMemoryTaskManager implements TaskManager {
     public EpicTask getEpicTaskById(int id) {
         historyManager.add(epicTasks.get(id));
         return epicTasks.get(id);
+    }
+
+    @Override
+    public List<Task> getHistory() {
+       return Managers.getDefaultHistory();
     }
 
     public static final class TaskIdGenerator {

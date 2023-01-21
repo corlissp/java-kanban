@@ -5,8 +5,6 @@ import tasks.SingleTask;
 import enums.Status;
 import tasks.SubTask;
 
-import java.sql.SQLOutput;
-
 public class Main {
     public static void main(String[] args) {
         InMemoryTaskManager manager = Managers.taskManager();
@@ -23,7 +21,7 @@ public class Main {
         System.out.println("\ttasks.SingleTask");
         System.out.println(manager.getAllSingleTasks());
         System.out.println("\tHistory");
-        System.out.println(Managers.getDefaultHistory());
+        System.out.println(manager.getHistory());
 
         // Create first epic task
         manager.saveNewEpicTask("Epic(1)", "");  // id 3
@@ -44,7 +42,7 @@ public class Main {
         System.out.println("\ttasks.SubTasks by Epic(1)");
         System.out.println(manager.getSubFromEpic(epicTask));
         System.out.println("\tHistory");
-        System.out.println(Managers.getDefaultHistory());
+        System.out.println(manager.getHistory());
 
         // Create second epic task
         manager.saveNewEpicTask("Epic(2)", "");  // id 6
@@ -93,7 +91,7 @@ public class Main {
         System.out.println(manager.getAllTasks());
 
         System.out.println("\tHistory");
-        System.out.println(Managers.getDefaultHistory());
+        System.out.println(manager.getHistory());
 
         manager.clearAll();
     }

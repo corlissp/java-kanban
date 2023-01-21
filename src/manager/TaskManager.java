@@ -7,6 +7,7 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     void saveNewSingleTask(String name, String description);
@@ -31,4 +32,5 @@ public interface TaskManager {
     void clearSingleTasks();
     void clearEpicTasks();
     void clearAll();
+    List<Task> getHistory();
 }

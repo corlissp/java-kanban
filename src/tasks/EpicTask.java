@@ -6,7 +6,7 @@ import enums.Type;
 import java.util.ArrayList;
 
 public class EpicTask extends Task {
-    private ArrayList<Integer> subTasks;
+    private final ArrayList<Integer> subTasks;
 
     public EpicTask(int id, String name, ArrayList<Integer> subTasks, Status status, String description) {
         super(id, name, status, description);
