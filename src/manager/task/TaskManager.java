@@ -1,4 +1,4 @@
-package manager;
+package manager.task;
 
 import enums.Status;
 import tasks.EpicTask;

@@ -1,6 +1,7 @@
-package manager;
+package manager.task;
 
 import enums.Status;
+import manager.history.InMemoryHistoryManager;
 import tasks.*;
 
 import java.util.ArrayList;
@@ -199,7 +200,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-       return Managers.getDefaultHistory();
+       return historyManager.getHistory();
     }
 
     public static final class TaskIdGenerator {
