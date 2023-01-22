@@ -1,4 +1,4 @@
-import manager.InMemoryTaskManager;
+import manager.task.InMemoryTaskManager;
 import manager.Managers;
 import tasks.EpicTask;
 import tasks.SingleTask;
