@@ -39,9 +39,18 @@ public class Main {
         subTask = manager.getSubTaskById(5);
         manager.updateSubStatus(subTask, Status.IN_PROGRESS);
 
+        // Test repeats in history
+        subTask = manager.getSubTaskById(4);
+        subTask = manager.getSubTaskById(5);
+        subTask = manager.getSubTaskById(5);
+
         System.out.println("\ttasks.SubTasks by Epic(1)");
         System.out.println(manager.getSubFromEpic(epicTask));
         System.out.println("\tHistory");
+        System.out.println(manager.getHistory());
+
+        manager.deleteSingleById(1);
+        System.out.println("\tHistory after delete id 1");
         System.out.println(manager.getHistory());
 
         // Create second epic task
@@ -61,6 +70,8 @@ public class Main {
 
         // Delete single task
         manager.deleteSingleById(2);
+        System.out.println("\tHistory after delete id 2");
+        System.out.println(manager.getHistory());
 
         /*
             Delete epic task
@@ -68,8 +79,11 @@ public class Main {
          */
         manager.deleteEpicById(6);
 
+        System.out.println("\tHistory after delete id 6");
+        System.out.println(manager.getHistory());
+
         // Delete one subtask by Epic(1)
-        manager.deleteSubById(5);
+        manager.deleteSubById(4);
 
         // Output
         System.out.println("\tAfter delete single task, Epic(2) and Sub 2 by Epic(1)");
@@ -84,7 +98,7 @@ public class Main {
             Delete last subtask by Epic(1)
             If epic haven`t god subs, epic status becomes NEW
          */
-        manager.clearSubTasks();
+        // manager.clearSubTasks();
 
         // Output
         System.out.println("\tFinal");
