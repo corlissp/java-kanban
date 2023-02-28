@@ -38,11 +38,16 @@ public final class LinkedList {
         return resulted;
     }
 
+    /*
+    В параметр принимает Node, а не id, т.к. это прописано в задании:
+    "Добавьте метод removeNode в класс.
+    В качестве параметра этот метод должен принимать объект Node — узел связного списка и вырезать его."
+     */
     public void removeNode(Node element) {
-        if (element == head) {
+        if (element.equals(head)) {
             head = element.next;
             element.next.prev = null;
-        } else if (element == tail) {
+        } else if (element.equals(tail)) {
             tail = element.prev;
             element.prev.next = null;
         } else {
@@ -53,7 +58,7 @@ public final class LinkedList {
         size--;
     }
 
-    int size() {
+    public int size() {
         return size;
     }
 
