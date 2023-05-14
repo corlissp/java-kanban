@@ -30,6 +30,14 @@ public class InMemoryHistoryManager implements HistoryManager {
             map.remove(id);
         }
     }
+
+    @Override
+    public void clear() {
+        for (Node node: map.values()) {
+            historyTasks.removeNode(node);
+        }
+        map.clear();
+    }
     @Override
     public List<Task> getHistory() {
         return this.historyTasks.getTasks();

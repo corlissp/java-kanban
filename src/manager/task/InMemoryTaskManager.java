@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final TaskIdGenerator taskIdGenerator;
-    private final HashMap<Integer, SingleTask> singleTasks;
-    private final HashMap<Integer, SubTask> subTasks;
-    private final HashMap<Integer, EpicTask> epicTasks;
-    private final InMemoryHistoryManager historyManager;
+    protected final TaskIdGenerator taskIdGenerator;
+    protected final HashMap<Integer, SingleTask> singleTasks;
+    protected final HashMap<Integer, SubTask> subTasks;
+    protected final HashMap<Integer, EpicTask> epicTasks;
+    protected InMemoryHistoryManager historyManager;
 
     public InMemoryTaskManager(InMemoryHistoryManager historyManager) {
         this.taskIdGenerator = new TaskIdGenerator();
@@ -99,9 +99,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSingleById(int id) {
-        if (singleTasks.get(id) != null)
+        if (singleTasks.get(id) != null) {
             singleTasks.remove(id);
             historyManager.remove(id);
+        }
     }
 
     @Override
@@ -140,6 +141,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.clear();
         singleTasks.clear();
         epicTasks.clear();
+        historyManager.clear();
     }
 
     @Override
@@ -207,10 +209,22 @@ public class InMemoryTaskManager implements TaskManager {
        return historyManager.getHistory();
     }
 
-    public static final class TaskIdGenerator {
+    public final class TaskIdGenerator {
         private int nextId = 1;
-        public int getNextId(){
-            return nextId++;
+        public int getNextId() {
+            int flag = 0;
+            while (flag == 0) {
+                if (singleTasks.containsKey(nextId) || epicTasks.containsKey(nextId) || subTasks.containsKey(nextId)) {
+                    nextId++;
+                } else {
+                    flag = 1;
+                }
+            }
+            return nextId;
+        }
+
+        public void setNextId(int id) {
+            nextId = id;
         }
     }
 }

@@ -1,3 +1,4 @@
+import manager.task.FileBackedTasksManager;
 import manager.task.InMemoryTaskManager;
 import manager.Managers;
 import tasks.EpicTask;
@@ -7,92 +8,93 @@ import tasks.SubTask;
 
 public class Main {
     public static void main(String[] args) {
-        InMemoryTaskManager manager = Managers.taskManager();
+        // InMemoryTaskManager manager = Managers.taskManager();
+        FileBackedTasksManager fileManager = Managers.fileManager();
 
         // Create 2 new single task
-        manager.saveNewSingleTask("First single task", "");  // id 1
-        manager.saveNewSingleTask("Second single task", "");  // id 2
+        fileManager.saveNewSingleTask("First single task", "");  // id 1
+        fileManager.saveNewSingleTask("Second single task", "");  // id 2
 
         // Change status single task
-        SingleTask singleTask = manager.getSingleTaskById(1);
-        manager.updateSingleStatus(singleTask, Status.DONE);
+        SingleTask singleTask = fileManager.getSingleTaskById(1);
+        fileManager.updateSingleStatus(singleTask, Status.DONE);
 
         // Output single tasks
         System.out.println("\ttasks.SingleTask");
-        System.out.println(manager.getAllSingleTasks());
+        System.out.println(fileManager.getAllSingleTasks());
         System.out.println("\tHistory");
-        System.out.println(manager.getHistory());
+        System.out.println(fileManager.getHistory());
 
         // Create first epic task
-        manager.saveNewEpicTask("Epic(1)", "");  // id 3
-        EpicTask epicTask = manager.getEpicTaskById(3);
+        fileManager.saveNewEpicTask("Epic(1)", "");  // id 3
+        EpicTask epicTask = fileManager.getEpicTaskById(3);
 
         // Create two subtasks by Epic(1)
-        manager.saveNewSubTask("Sub 1 by Epic(1)", "", epicTask.getId());  // id 4
-        manager.saveNewSubTask("Sub 2 by Epic(1)", "", epicTask.getId());  // id 5
+        fileManager.saveNewSubTask("Sub 1 by Epic(1)", "", epicTask.getId());  // id 4
+        fileManager.saveNewSubTask("Sub 2 by Epic(1)", "", epicTask.getId());  // id 5
 
         // Change status first subtask
-        SubTask subTask = manager.getSubTaskById(4);
-        manager.updateSubStatus(subTask, Status.DONE);
+        SubTask subTask = fileManager.getSubTaskById(4);
+        fileManager.updateSubStatus(subTask, Status.DONE);
 
         // Change status second subtask
-        subTask = manager.getSubTaskById(5);
-        manager.updateSubStatus(subTask, Status.IN_PROGRESS);
+        subTask = fileManager.getSubTaskById(5);
+        fileManager.updateSubStatus(subTask, Status.IN_PROGRESS);
 
         // Test repeats in history
-        subTask = manager.getSubTaskById(4);
-        subTask = manager.getSubTaskById(5);
-        subTask = manager.getSubTaskById(5);
+        subTask = fileManager.getSubTaskById(4);
+        subTask = fileManager.getSubTaskById(5);
+        subTask = fileManager.getSubTaskById(5);
 
         System.out.println("\ttasks.SubTasks by Epic(1)");
-        System.out.println(manager.getSubFromEpic(epicTask));
+        System.out.println(fileManager.getSubFromEpic(epicTask));
         System.out.println("\tHistory");
-        System.out.println(manager.getHistory());
+        System.out.println(fileManager.getHistory());
 
-        manager.deleteSingleById(1);
+        fileManager.deleteSingleById(1);
         System.out.println("\tHistory after delete id 1");
-        System.out.println(manager.getHistory());
+        System.out.println(fileManager.getHistory());
 
         // Create second epic task
-        manager.saveNewEpicTask("Epic(2)", "");  // id 6
-        epicTask = manager.getEpicTaskById(6);
+        fileManager.saveNewEpicTask("Epic(2)", "");  // id 6
+        epicTask = fileManager.getEpicTaskById(6);
 
         // Create one subtask by Epic(2)
-        manager.saveNewSubTask("Sub 1 by Epic(2)", "", epicTask.getId());  // id 7
+        fileManager.saveNewSubTask("Sub 1 by Epic(2)", "", epicTask.getId());  // id 7
 
         // Change status subtask
-        subTask = manager.getSubTaskById(7);
-        manager.updateSubStatus(subTask, Status.DONE);
+        subTask = fileManager.getSubTaskById(7);
+        fileManager.updateSubStatus(subTask, Status.DONE);
 
         // Output epic tasks
         System.out.println("\ttasks.EpicTask");
-        System.out.println(manager.getAllEpicTasks());
+        System.out.println(fileManager.getAllEpicTasks());
 
         // Delete single task
-        manager.deleteSingleById(2);
+        fileManager.deleteSingleById(2);
         System.out.println("\tHistory after delete id 2");
-        System.out.println(manager.getHistory());
+        System.out.println(fileManager.getHistory());
 
         /*
             Delete epic task
             If delete an epic, the subtasks of this epic is also deleted
          */
-        manager.deleteEpicById(6);
+        fileManager.deleteEpicById(6);
 
         System.out.println("\tHistory after delete id 6");
-        System.out.println(manager.getHistory());
+        System.out.println(fileManager.getHistory());
 
         // Delete one subtask by Epic(1)
-        manager.deleteSubById(4);
+        fileManager.deleteSubById(4);
 
         // Output
         System.out.println("\tAfter delete single task, Epic(2) and Sub 2 by Epic(1)");
         System.out.println("\tSingle Tasks");
-        System.out.println(manager.getAllSingleTasks());
+        System.out.println(fileManager.getAllSingleTasks());
         System.out.println("\tEpic Tasks");
-        System.out.println(manager.getAllEpicTasks());
+        System.out.println(fileManager.getAllEpicTasks());
         System.out.println("\tSubtasks");
-        System.out.println(manager.getAllSubTasks());
+        System.out.println(fileManager.getAllSubTasks());
 
         /*
             Delete last subtask by Epic(1)
@@ -102,11 +104,18 @@ public class Main {
 
         // Output
         System.out.println("\tFinal");
-        System.out.println(manager.getAllTasks());
+        System.out.println(fileManager.getAllTasks());
 
         System.out.println("\tHistory");
-        System.out.println(manager.getHistory());
+        System.out.println(fileManager.getHistory());
 
-        manager.clearAll();
+        //fileManager.clearAll();
+
+        fileManager.openFile("Test.txt");
+        fileManager.saveNewSingleTask("Single new", "After file");
+        singleTask = fileManager.getSingleTaskById(4);
+        fileManager.updateSingleStatus(singleTask, Status.IN_PROGRESS);
+        fileManager.saveNewEpicTask("Epic new after file", "Id must be 6");
+        fileManager.deleteSingleById(1);
     }
 }

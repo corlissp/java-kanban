@@ -1,6 +1,7 @@
 package manager;
 
 import manager.history.InMemoryHistoryManager;
+import manager.task.FileBackedTasksManager;
 import manager.task.InMemoryTaskManager;
 import tasks.Task;
 
@@ -9,6 +10,15 @@ import java.util.List;
 public abstract class Managers {
     private static InMemoryTaskManager TASK_MANAGER;
     private static InMemoryHistoryManager HISTORY_MANAGER;
+
+    public static FileBackedTasksManager FILE_MANAGER;
+
+    public static FileBackedTasksManager fileManager() {
+        if (FILE_MANAGER == null) {
+            FILE_MANAGER = new FileBackedTasksManager(historyManager());
+        }
+        return FILE_MANAGER;
+    }
 
     public static InMemoryTaskManager taskManager() {
         if (TASK_MANAGER == null) {

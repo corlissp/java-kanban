@@ -25,12 +25,7 @@ public class SingleTask extends Task {
 
     @Override
     public String toString() {
-        return "tasks.SingleTask{" +
-                "id = " + getId() +
-                ", name = '" + getName() + '\'' +
-                ", description = '" + getDescription() + '\'' +
-                ", status = '" + getStatus() + '\'' +
-                "}";
+        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDescription() + "," + "\n";
     }
 
 }

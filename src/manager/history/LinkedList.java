@@ -44,6 +44,11 @@ public final class LinkedList {
     В качестве параметра этот метод должен принимать объект Node — узел связного списка и вырезать его."
      */
     public void removeNode(Node element) {
+        if (size == 1) {
+            head = null;
+            size--;
+            return;
+        }
         if (element.equals(head)) {
             head = element.next;
             element.next.prev = null;
