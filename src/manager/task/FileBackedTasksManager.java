@@ -23,24 +23,26 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super(historyManager);
     }
 
+    private static FileBackedTasksManager fileManager = new FileBackedTasksManager(historyManager);
+
     public void save() {
         try {
             HashMap<Integer, Task> tasks = new HashMap<>();
             Path path = Paths.get("resources");
             Path absPath = path.toAbsolutePath();
             String separator = File.separator;
-            File file = new File(absPath + separator + "TaskManager.txt");
+            File file = new File(absPath + separator + "TaskManager.scv");
             Writer fileWriter = new FileWriter(file);
-            for (SingleTask singleTask: singleTasks.values()) {
+            for (SingleTask singleTask : singleTasks.values()) {
                 tasks.put(singleTask.getId(), singleTask);
             }
-            for (EpicTask epicTask: epicTasks.values()) {
+            for (EpicTask epicTask : epicTasks.values()) {
                 tasks.put(epicTask.getId(), epicTask);
             }
-            for (SubTask subTask: subTasks.values()) {
+            for (SubTask subTask : subTasks.values()) {
                 tasks.put(subTask.getId(), subTask);
             }
-            for (Task task: tasks.values()) {
+            for (Task task : tasks.values()) {
                 fileWriter.write(task.toString());
             }
             fileWriter.write("\n");
@@ -94,6 +96,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.saveNewSubTask(name, description, epicId);
         save();
     }
+
     @Override
     public void updateSingleStatus(SingleTask singleTask, Status newStatus) {
         super.updateSingleStatus(singleTask, newStatus);
@@ -161,15 +164,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         File file = new File(absPath + separator + fileName);
         loadFromFile(file);
     }
-    private void loadFromFile(File file) {
+
+    private static void loadFromFile(File file) {
         try {
             Scanner scanner = new Scanner(file);
             String line = scanner.nextLine();
             while (line != null) {
-                System.out.println(line);
                 if (line.isEmpty()) {
                     line = scanner.nextLine();
-                    System.out.println(line);
                     List<Integer> historyIdList = historyFromString(line);
                     saveHistoryFromString(historyIdList);
                     break;
@@ -184,7 +186,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    public void saveHistoryFromString(List<Integer> list) {
+    private static void saveHistoryFromString(List<Integer> list) {
         for (Integer id : list) {
             if (epicTasks.containsKey(id)) {
                 historyManager.add(epicTasks.get(id));
@@ -194,43 +196,43 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 historyManager.add(singleTasks.get(id));
             }
         }
-        save();
+        fileManager.save();
     }
 
-    public void saveTaskFromString(String value) {
+    private static void saveTaskFromString(String value) {
         String[] split = value.split(",");
         int id = parseInt(split[0]);
         Status status = statusFromString(split[3]);
         switch (split[1]) {
             case "SINGLE":
-                saveNewSingleTask(split[2], split[4], id);
+                fileManager.saveNewSingleTask(split[2], split[4], id);
                 SingleTask singleTask = singleTasks.get(id);
                 if (singleTask != null) {
                     singleTask.setStatus(status);
-                    save();
+                    fileManager.save();
                 }
                 break;
             case "EPIC":
-                saveNewEpicTask(split[2], split[4], id);
+                fileManager.saveNewEpicTask(split[2], split[4], id);
                 EpicTask epic = epicTasks.get(id);
                 if (epic != null) {
                     epic.setStatus(status);
-                    save();
+                    fileManager.save();
                 }
                 break;
             case "SUB":
                 int epicId = parseInt(split[5]);
-                saveNewSubTask(split[2], split[4], epicId, id);
+                fileManager.saveNewSubTask(split[2], split[4], epicId, id);
                 SubTask sub = subTasks.get(id);
                 if (sub != null) {
                     sub.setStatus(status);
-                    save();
+                    fileManager.save();
                 }
                 break;
         }
     }
 
-    static List<Integer> historyFromString(String value) {
+    private static List<Integer> historyFromString(String value) {
         List<Integer> listId = new ArrayList<>();
         String[] split = value.split(",");
         for (String s : split) {
@@ -239,19 +241,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return listId;
     }
 
-    String historyToString() {
+    private String historyToString() {
         String history;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < getHistory().size(); i++) {
             if (i == getHistory().size() - 1)
-                    builder.append(getHistory().get(i).getId());
-                else
-                    builder.append(getHistory().get(i).getId()).append(",");
+                builder.append(getHistory().get(i).getId());
+            else
+                builder.append(getHistory().get(i).getId()).append(",");
         }
         history = builder.toString();
         return history;
     }
-    public static Status statusFromString(String line) {
+
+    private static Status statusFromString(String line) {
         Status status = NEW;
         switch (line) {
             case "NEW":

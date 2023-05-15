@@ -10,17 +10,17 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final TaskIdGenerator taskIdGenerator;
-    protected final HashMap<Integer, SingleTask> singleTasks;
-    protected final HashMap<Integer, SubTask> subTasks;
-    protected final HashMap<Integer, EpicTask> epicTasks;
-    protected InMemoryHistoryManager historyManager;
+    protected static HashMap<Integer, SingleTask> singleTasks;
+    protected static HashMap<Integer, SubTask> subTasks;
+    protected static HashMap<Integer, EpicTask> epicTasks;
+    protected static InMemoryHistoryManager historyManager;
 
     public InMemoryTaskManager(InMemoryHistoryManager historyManager) {
         this.taskIdGenerator = new TaskIdGenerator();
-        this.singleTasks = new HashMap<>();
-        this.subTasks = new HashMap<>();
-        this.epicTasks = new HashMap<>();
-        this.historyManager = historyManager;
+        singleTasks = new HashMap<>();
+        subTasks = new HashMap<>();
+        epicTasks = new HashMap<>();
+        InMemoryTaskManager.historyManager = historyManager;
     }
 
     @Override
@@ -141,13 +141,13 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.clear();
         singleTasks.clear();
         epicTasks.clear();
-        historyManager.clear();
+        //historyManager.clear();
     }
 
     @Override
     public void clearSubTasks() {
         subTasks.clear();
-        for (EpicTask epic: epicTasks.values()) {
+        for (EpicTask epic : epicTasks.values()) {
             epic.clearSubtasks();
             updateEpicStatus(epic);
         }
@@ -171,6 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.addAll(subTasks.values());
         return tasks;
     }
+
     @Override
     public ArrayList<SingleTask> getAllSingleTasks() {
         return new ArrayList<>(singleTasks.values());
@@ -206,11 +207,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-       return historyManager.getHistory();
+        return historyManager.getHistory();
     }
 
-    public final class TaskIdGenerator {
+    public static final class TaskIdGenerator {
         private int nextId = 1;
+
         public int getNextId() {
             int flag = 0;
             while (flag == 0) {

@@ -111,11 +111,11 @@ public class Main {
 
         //fileManager.clearAll();
 
-        fileManager.openFile("Test.txt");
+        fileManager.openFile("Test.scv");
         fileManager.saveNewSingleTask("Single new", "After file");
-        singleTask = fileManager.getSingleTaskById(4);
+        singleTask = fileManager.getSingleTaskById(7);
         fileManager.updateSingleStatus(singleTask, Status.IN_PROGRESS);
-        fileManager.saveNewEpicTask("Epic new after file", "Id must be 6");
+        fileManager.saveNewEpicTask("Epic new after file", "Epic for save");
         fileManager.deleteSingleById(1);
     }
 }

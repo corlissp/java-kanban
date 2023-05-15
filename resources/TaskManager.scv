@@ -1,7 +1,7 @@
 2,EPIC,Epic2,DONE,Description epic2,
 3,SUB,Sub Task2,DONE,Description sub task3,2
-4,SINGLE,Single new,IN_PROGRESS,After file,
 5,SUB,Sub 2 by Epic(1),IN_PROGRESS,,3
-6,EPIC,Epic new after file,NEW,Id must be 6,
+7,SINGLE,Single new,IN_PROGRESS,After file,
+8,EPIC,Epic new after file,NEW,Epic for save,
 
-5,2,3,4
+5,2,3,7
