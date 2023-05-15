@@ -1,7 +1,10 @@
 package enums;
 
 public enum Status {
-    NEW,
-    IN_PROGRESS,
-    DONE
+    NEW("Новый"),
+    IN_PROGRESS("В процессе"),
+    DONE("Выполнено");
+
+    Status(String role) {
+    }
 }
