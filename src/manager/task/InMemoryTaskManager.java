@@ -2,14 +2,18 @@ package manager.task;
 
 import enums.Status;
 import manager.history.InMemoryHistoryManager;
-import tasks.*;
+import tasks.EpicTask;
+import tasks.SingleTask;
+import tasks.SubTask;
+import tasks.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final TaskIdGenerator taskIdGenerator;
+    protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
     protected static HashMap<Integer, SingleTask> singleTasks;
     protected static HashMap<Integer, SubTask> subTasks;
     protected static HashMap<Integer, EpicTask> epicTasks;
@@ -24,28 +28,53 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void saveNewSingleTask(String name, String description) {
-        int freeId = taskIdGenerator.getNextId();
-        SingleTask singleTask = new SingleTask(freeId, name, Status.NEW, description);
-        singleTasks.put(singleTask.getId(), singleTask);
+    public boolean isTimeFree(String time) {
+        LocalDateTime dateTime = LocalDateTime.parse(time, DATE_TIME_FORMATTER);
+        List<Task> list = getAllTasks();
+        for (Task task: list) {
+            if (dateTime.isAfter(task.getStartTime()) && dateTime.isBefore(task.getEndTime()))
+                return false;
+        }
+        return true;
     }
 
     @Override
-    public void saveNewEpicTask(String name, String description) {
+    public void saveNewSingleTask(String name, String description, String startTime, int duration) {
         int freeId = taskIdGenerator.getNextId();
-        ArrayList<Integer> subTasks = new ArrayList<>();
-        EpicTask epicTask = new EpicTask(freeId, name, subTasks, Status.NEW, description);
-        epicTasks.put(epicTask.getId(), epicTask);
+        if (isTimeFree(startTime)) {
+            SingleTask singleTask = new SingleTask(freeId, name, Status.NEW, description, duration, startTime);
+            singleTasks.put(singleTask.getId(), singleTask);
+        } else {
+            System.out.println("На это время уже есть задача!");
+        }
     }
 
     @Override
-    public void saveNewSubTask(String name, String description, int epicId) {
+    public void saveNewEpicTask(String name, String description, String startTime) {
+        int duration = 0;
         int freeId = taskIdGenerator.getNextId();
-        if (epicTasks.get(epicId) != null) {
-            SubTask subTask = new SubTask(freeId, name, Status.NEW, epicId, description);
-            subTasks.put(subTask.getId(), subTask);
-            EpicTask epicTask = epicTasks.get(epicId);
-            epicTask.addSubTask(freeId);
+        if (isTimeFree(startTime)) {
+            ArrayList<Integer> subTasks = new ArrayList<>();
+            EpicTask epicTask = new EpicTask(freeId, name, subTasks, Status.NEW, description, duration, startTime);
+            epicTasks.put(epicTask.getId(), epicTask);
+        } else {
+            System.out.println("На это время уже есть задача!");
+        }
+    }
+
+    @Override
+    public void saveNewSubTask(String name, String description, int epicId, String startTime, int duration) {
+        int freeId = taskIdGenerator.getNextId();
+        if (isTimeFree(startTime)) {
+            if (epicTasks.get(epicId) != null) {
+                SubTask subTask = new SubTask(freeId, name, Status.NEW, epicId, description, duration, startTime);
+                subTasks.put(subTask.getId(), subTask);
+                EpicTask epicTask = epicTasks.get(epicId);
+                epicTask.addSubTask(freeId);
+                epicTask.setDuration(epicTask.getDuration() + subTask.getDuration());
+            }
+        } else {
+            System.out.println("На это время уже есть задача!");
         }
     }
 
@@ -141,7 +170,8 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.clear();
         singleTasks.clear();
         epicTasks.clear();
-        //historyManager.clear();
+        taskIdGenerator.setNextId(1);
+        // historyManager.clear();
     }
 
     @Override
@@ -189,25 +219,42 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public SingleTask getSingleTaskById(int id) {
-        historyManager.add(singleTasks.get(id));
-        return singleTasks.get(id);
+        if (singleTasks.containsKey(id)) {
+            historyManager.add(singleTasks.get(id));
+            return singleTasks.get(id);
+        }
+        return null;
     }
 
     @Override
     public SubTask getSubTaskById(int id) {
-        historyManager.add(subTasks.get(id));
-        return subTasks.get(id);
+        if (subTasks.containsKey(id)) {
+            historyManager.add(subTasks.get(id));
+            return subTasks.get(id);
+        }
+        return null;
     }
 
     @Override
     public EpicTask getEpicTaskById(int id) {
-        historyManager.add(epicTasks.get(id));
-        return epicTasks.get(id);
+        if (epicTasks.containsKey(id)) {
+            historyManager.add(epicTasks.get(id));
+            return epicTasks.get(id);
+        }
+        return null;
     }
 
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public Set<Task> getPrioritizedTasks() {
+        List<Task> list = getAllTasks();
+        Set<Task> set = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+        set.addAll(list);
+        return set;
     }
 
     public static final class TaskIdGenerator {

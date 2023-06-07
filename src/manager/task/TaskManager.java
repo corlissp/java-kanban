@@ -8,11 +8,12 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
-    void saveNewSingleTask(String name, String description);
-    void saveNewSubTask(String name, String description, int epicId);
-    void saveNewEpicTask(String name, String description);
+    void saveNewSingleTask(String name, String description, String startTime, int duration);
+    void saveNewSubTask(String name, String description, int epicId, String startTime, int duration);
+    void saveNewEpicTask(String name, String description, String startTime);
     void updateSingleStatus(SingleTask singleTask, Status newStatus);
     void updateSubStatus(SubTask subTask, Status newStatus);
     void updateEpicStatus(EpicTask epicTask);
@@ -33,4 +34,6 @@ public interface TaskManager {
     void clearEpicTasks();
     void clearAll();
     List<Task> getHistory();
+    boolean isTimeFree(String time);
+    Set<Task> getPrioritizedTasks();
 }

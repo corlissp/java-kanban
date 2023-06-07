@@ -1,7 +1,6 @@
-2,EPIC,Epic2,DONE,Description epic2,
-3,SUB,Sub Task2,DONE,Description sub task3,2
-5,SUB,Sub 2 by Epic(1),IN_PROGRESS,,3
-7,SINGLE,Single new,IN_PROGRESS,After file,
-8,EPIC,Epic new after file,NEW,Epic for save,
+1,SINGLE,Task1,IN_PROGRESS,Description task1,20:00 05.06.23,21:00 05.06.23
+2,EPIC,Epic2,DONE,Description epic2,21:00 05.06.23,21:00 05.06.23
+3,SUB,Sub Task2,DONE,Description sub task3,2,21:00 05.06.23,23:00 05.06.23
+5,EPIC,Epic new after file,NEW,Epic for save,13:00 12.08.23,13:00 12.08.23
 
-5,2,3,7
+5,2,3,1

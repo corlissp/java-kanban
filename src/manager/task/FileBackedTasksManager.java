@@ -10,10 +10,7 @@ import tasks.Task;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static enums.Status.*;
 import static java.lang.Integer.parseInt;
@@ -23,7 +20,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super(historyManager);
     }
 
-    private static FileBackedTasksManager fileManager = new FileBackedTasksManager(historyManager);
+    private static final FileBackedTasksManager fileManager = new FileBackedTasksManager(historyManager);
 
     public void save() {
         try {
@@ -53,47 +50,79 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private void saveNewSingleTask(String name, String description, int id) {
-        SingleTask singleTask = new SingleTask(id, name, Status.NEW, description);
-        singleTasks.put(singleTask.getId(), singleTask);
-        save();
-        taskIdGenerator.setNextId(id + 1);
-    }
-
     @Override
-    public void saveNewSingleTask(String name, String description) {
-        super.saveNewSingleTask(name, description);
-        save();
-    }
-
-    private void saveNewEpicTask(String name, String description, int id) {
-        ArrayList<Integer> subTasks = new ArrayList<>();
-        EpicTask epicTask = new EpicTask(id, name, subTasks, Status.NEW, description);
-        epicTasks.put(epicTask.getId(), epicTask);
-        save();
-        taskIdGenerator.setNextId(id + 1);
-    }
-
-    @Override
-    public void saveNewEpicTask(String name, String description) {
-        super.saveNewEpicTask(name, description);
-        save();
-    }
-
-    public void saveNewSubTask(String name, String description, int epicId, int id) {
-        if (epicTasks.get(epicId) != null) {
-            SubTask subTask = new SubTask(id, name, Status.NEW, epicId, description);
-            subTasks.put(subTask.getId(), subTask);
-            EpicTask epicTask = epicTasks.get(epicId);
-            epicTask.addSubTask(id);
+    public Set<Task> getPrioritizedTasks() {
+        try {
+            Path path = Paths.get("resources");
+            Path absPath = path.toAbsolutePath();
+            String separator = File.separator;
+            File file = new File(absPath + separator + "TaskManager.scv");
+            Writer fileWriter = new FileWriter(file);
+            for (Task task: super.getPrioritizedTasks()) {
+                fileWriter.write(task.toString());
+            }
+            fileWriter.write("\n");
+            fileWriter.write(historyToString());
+            fileWriter.close();
+        } catch (IOException ex) {
+            System.out.println("Запись не выполнена!");
         }
-        save();
-        taskIdGenerator.setNextId(id + 1);
+        return super.getPrioritizedTasks();
+    }
+
+    private void saveNewSingleTask(String name, String description, int id, String startTime, int duration) {
+        if (super.isTimeFree(startTime)) {
+            SingleTask singleTask = new SingleTask(id, name, Status.NEW, description, duration, startTime);
+            singleTasks.put(singleTask.getId(), singleTask);
+            save();
+            taskIdGenerator.setNextId(id + 1);
+        } else {
+            System.out.println("На это время уже есть задача!");
+        }
     }
 
     @Override
-    public void saveNewSubTask(String name, String description, int epicId) {
-        super.saveNewSubTask(name, description, epicId);
+    public void saveNewSingleTask(String name, String description, String startTime, int duration) {
+        super.saveNewSingleTask(name, description, startTime, duration);
+        save();
+    }
+
+    private void saveNewEpicTask(String name, String description, int id, String startTime) {
+        if (super.isTimeFree(startTime)) {
+            ArrayList<Integer> subTasks = new ArrayList<>();
+            EpicTask epicTask = new EpicTask(id, name, subTasks, Status.NEW, description, 0, startTime);
+            epicTasks.put(epicTask.getId(), epicTask);
+            save();
+            taskIdGenerator.setNextId(id + 1);
+        } else {
+            System.out.println("На это время уже есть задача!");
+        }
+    }
+
+    @Override
+    public void saveNewEpicTask(String name, String description, String startTime) {
+        super.saveNewEpicTask(name, description, startTime);
+        save();
+    }
+
+    private void saveNewSubTask(String name, String description, int epicId, int id, String startTime, int duration) {
+        if (super.isTimeFree(startTime)) {
+            if (epicTasks.get(epicId) != null) {
+                SubTask subTask = new SubTask(id, name, Status.NEW, epicId, description, duration, startTime);
+                subTasks.put(subTask.getId(), subTask);
+                EpicTask epicTask = epicTasks.get(epicId);
+                epicTask.addSubTask(id);
+            }
+            save();
+            taskIdGenerator.setNextId(id + 1);
+        } else {
+            System.out.println("На это время уже есть задача!");
+        }
+    }
+
+    @Override
+    public void saveNewSubTask(String name, String description, int epicId, String startTime, int duration) {
+        super.saveNewSubTask(name, description, epicId, startTime, duration);
         save();
     }
 
@@ -205,7 +234,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         Status status = statusFromString(split[3]);
         switch (split[1]) {
             case "SINGLE":
-                fileManager.saveNewSingleTask(split[2], split[4], id);
+                int duration = parseInt(split[6]);
+                fileManager.saveNewSingleTask(split[2], split[4], id, split[5], duration);
                 SingleTask singleTask = singleTasks.get(id);
                 if (singleTask != null) {
                     singleTask.setStatus(status);
@@ -213,7 +243,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
                 break;
             case "EPIC":
-                fileManager.saveNewEpicTask(split[2], split[4], id);
+                fileManager.saveNewEpicTask(split[2], split[4], id, split[5]);
                 EpicTask epic = epicTasks.get(id);
                 if (epic != null) {
                     epic.setStatus(status);
@@ -222,7 +252,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 break;
             case "SUB":
                 int epicId = parseInt(split[5]);
-                fileManager.saveNewSubTask(split[2], split[4], epicId, id);
+                duration = parseInt(split[7]);
+                fileManager.saveNewSubTask(split[2], split[4], epicId, id, split[6], duration);
                 SubTask sub = subTasks.get(id);
                 if (sub != null) {
                     sub.setStatus(status);
@@ -245,10 +276,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String history;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < getHistory().size(); i++) {
-            if (i == getHistory().size() - 1)
+            if (i == getHistory().size() - 1) {
                 builder.append(getHistory().get(i).getId());
-            else
+            } else {
                 builder.append(getHistory().get(i).getId()).append(",");
+            }
         }
         history = builder.toString();
         return history;

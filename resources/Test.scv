@@ -1,5 +1,5 @@
-1,SINGLE,Task1,NEW,Description task1,
-2,EPIC,Epic2,DONE,Description epic2,
-3,SUB,Sub Task2,DONE,Description sub task3,2
+1,SINGLE,Task1,NEW,Description task1,20:00 05.06.23,60
+2,EPIC,Epic2,DONE,Description epic2,21:00 05.06.23
+3,SUB,Sub Task2,DONE,Description sub task3,2,21:00 05.06.23,120
 
 2,3
