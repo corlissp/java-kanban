@@ -1,4 +1,4 @@
-package manager.history.test;
+package tests;
 
 import enums.Status;
 import manager.history.InMemoryHistoryManager;

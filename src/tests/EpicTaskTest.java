@@ -1,4 +1,4 @@
-package tasks.test;
+package tests;
 
 import enums.Status;
 import manager.Managers;

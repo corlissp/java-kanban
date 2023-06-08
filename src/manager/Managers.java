@@ -8,30 +8,21 @@ import tasks.Task;
 import java.util.List;
 
 public abstract class Managers {
-    private static InMemoryTaskManager TASK_MANAGER;
     private static InMemoryHistoryManager HISTORY_MANAGER;
 
-    public static FileBackedTasksManager FILE_MANAGER;
-
     public static FileBackedTasksManager fileManager() {
-        if (FILE_MANAGER == null) {
-            FILE_MANAGER = new FileBackedTasksManager(historyManager());
-        }
-        return FILE_MANAGER;
+        return new FileBackedTasksManager(historyManager());
     }
 
     public static InMemoryTaskManager taskManager() {
-        if (TASK_MANAGER == null) {
-            TASK_MANAGER = new InMemoryTaskManager(historyManager());
-        }
-        return TASK_MANAGER;
+        return new InMemoryTaskManager(historyManager());
     }
 
     public static InMemoryHistoryManager historyManager() {
         if (HISTORY_MANAGER == null) {
             HISTORY_MANAGER = new InMemoryHistoryManager();
         }
-        return HISTORY_MANAGER;
+        return new InMemoryHistoryManager();
     }
 
     public static List<Task> getDefaultHistory() {

@@ -171,7 +171,6 @@ public class InMemoryTaskManager implements TaskManager {
         singleTasks.clear();
         epicTasks.clear();
         taskIdGenerator.setNextId(1);
-        // historyManager.clear();
     }
 
     @Override
