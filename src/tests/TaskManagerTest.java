@@ -10,6 +10,8 @@ import tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 abstract class TaskManagerTest<T extends TaskManager> {
     private final T manager;
@@ -43,20 +45,20 @@ abstract class TaskManagerTest<T extends TaskManager> {
         list.add(manager.getSingleTaskById(14));
         list.add(manager.getSubTaskById(12));
         list.add(manager.getEpicTaskById(2));
-        Assertions.assertEquals(manager.getHistory().size(), list.size());
-        Assertions.assertEquals(manager.getHistory(), list);
+        assertEquals(manager.getHistory().size(), list.size());
+        assertEquals(manager.getHistory(), list);
         list.add(manager.getSingleTaskById(14));
         list.remove(0);
-        Assertions.assertEquals(manager.getHistory(), list);
+        assertEquals(manager.getHistory(), list);
     }
 
     @Test
     void saveNewSingleTask() {
         manager.saveNewSingleTask("Single", "Single id 15", "13:00 20.01.24", 180); // id 15
-        Assertions.assertEquals(manager.getSingleTaskById(15).getName(), "Single");
-        Assertions.assertEquals(manager.getSingleTaskById(15).getStatus(), Status.NEW);
-        Assertions.assertEquals(manager.getSingleTaskById(15).getDescription(), "Single id 15");
-        Assertions.assertEquals(manager.getSingleTaskById(15).getId(), 15);
+        assertEquals(manager.getSingleTaskById(15).getName(), "Single");
+        assertEquals(manager.getSingleTaskById(15).getStatus(), Status.NEW);
+        assertEquals(manager.getSingleTaskById(15).getDescription(), "Single id 15");
+        assertEquals(manager.getSingleTaskById(15).getId(), 15);
         manager.deleteSingleById(15);
         manager.clearAll();
     }
@@ -64,12 +66,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void saveNewSubTask() {
         manager.saveNewSubTask("Sub test", "Epic id 11", 11, "13:00 20.01.24", 180); // id 15
-        Assertions.assertEquals(manager.getSubTaskById(15).getName(), "Sub test");
-        Assertions.assertEquals(manager.getSubTaskById(15).getEpicTaskId(), 11);
-        Assertions.assertEquals(manager.getSubTaskById(15).getDescription(), "Epic id 11");
-        Assertions.assertEquals(manager.getSubTaskById(15).getStatus(), Status.NEW);
+        assertEquals(manager.getSubTaskById(15).getName(), "Sub test");
+        assertEquals(manager.getSubTaskById(15).getEpicTaskId(), 11);
+        assertEquals(manager.getSubTaskById(15).getDescription(), "Epic id 11");
+        assertEquals(manager.getSubTaskById(15).getStatus(), Status.NEW);
         manager.saveNewSubTask("Sub test 2", "No id Epic", 0, "13:00 21.01.24", 180); // id 16
-        Assertions.assertNull(manager.getSubTaskById(16), "Неверно сохраняет с несуществующем Epic");
+        assertNull(manager.getSubTaskById(16), "Неверно сохраняет с несуществующем Epic");
         manager.deleteSubById(15);
         manager.clearAll();
     }
@@ -77,11 +79,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void saveNewEpicTask() {
         manager.saveNewEpicTask("Epic test", "id 15, no sub", "13:00 20.01.24"); // id 15
-        Assertions.assertEquals(manager.getEpicTaskById(15).getName(), "Epic test");
-        Assertions.assertEquals(manager.getEpicTaskById(15).getDescription(), "id 15, no sub");
-        Assertions.assertEquals(manager.getEpicTaskById(15).getStatus(), Status.NEW);
-        Assertions.assertEquals(manager.getEpicTaskById(15).getId(), 15);
-        Assertions.assertTrue(manager.getEpicTaskById(15).getSubTasks().isEmpty());
+        assertEquals(manager.getEpicTaskById(15).getName(), "Epic test");
+        assertEquals(manager.getEpicTaskById(15).getDescription(), "id 15, no sub");
+        assertEquals(manager.getEpicTaskById(15).getStatus(), Status.NEW);
+        assertEquals(manager.getEpicTaskById(15).getId(), 15);
+        assertTrue(manager.getEpicTaskById(15).getSubTasks().isEmpty());
         manager.deleteEpicById(15);
         manager.clearAll();
     }
@@ -89,150 +91,150 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void updateSingleStatus() {
         manager.updateSingleStatus(manager.getSingleTaskById(14), Status.DONE);
-        Assertions.assertEquals(manager.getSingleTaskById(14).getStatus(), Status.DONE);
+        assertEquals(manager.getSingleTaskById(14).getStatus(), Status.DONE);
         manager.clearAll();
     }
 
     @Test
     void updateSubStatus() {
         manager.updateSubStatus(manager.getSubTaskById(6), Status.DONE);
-        Assertions.assertEquals(manager.getSubTaskById(6).getStatus(), Status.DONE);
+        assertEquals(manager.getSubTaskById(6).getStatus(), Status.DONE);
         manager.clearAll();
     }
 
     @Test
     void updateEpicStatus() {
-        Assertions.assertEquals(manager.getEpicTaskById(5).getStatus(), Status.NEW);
+        assertEquals(manager.getEpicTaskById(5).getStatus(), Status.NEW);
         manager.getSubTaskById(6).setStatus(Status.DONE);
         manager.updateEpicStatus(manager.getEpicTaskById(5));
-        Assertions.assertEquals(manager.getEpicTaskById(5).getStatus(), Status.IN_PROGRESS);
+        assertEquals(manager.getEpicTaskById(5).getStatus(), Status.IN_PROGRESS);
         manager.getSubTaskById(7).setStatus(Status.DONE);
         manager.updateEpicStatus(manager.getEpicTaskById(5));
-        Assertions.assertEquals(manager.getEpicTaskById(5).getStatus(), Status.DONE);
+        assertEquals(manager.getEpicTaskById(5).getStatus(), Status.DONE);
         manager.clearAll();
     }
     @Test
     void getSingleTaskById() {
-        Assertions.assertEquals(manager.getSingleTaskById(14).getName(), "Single");
-        Assertions.assertEquals(manager.getSingleTaskById(14).getStatus(), Status.NEW);
-        Assertions.assertEquals(manager.getSingleTaskById(14).getDescription(), "Single id 14");
-        Assertions.assertEquals(manager.getSingleTaskById(14).getId(), 14);
-        Assertions.assertNull(manager.getSingleTaskById(0), "Неверно возвращается несуществующий SingleTask");
+        assertEquals(manager.getSingleTaskById(14).getName(), "Single");
+        assertEquals(manager.getSingleTaskById(14).getStatus(), Status.NEW);
+        assertEquals(manager.getSingleTaskById(14).getDescription(), "Single id 14");
+        assertEquals(manager.getSingleTaskById(14).getId(), 14);
+        assertNull(manager.getSingleTaskById(0), "Неверно возвращается несуществующий SingleTask");
         manager.clearAll();
     }
 
     @Test
     void getSubTaskById() {
-        Assertions.assertNull(manager.getSubTaskById(0), "Неверно возвращается несуществующий SubTask");
-        Assertions.assertEquals(manager.getSubTaskById(3).getEpicTaskId(), 2);
-        Assertions.assertEquals(manager.getSubTaskById(3).getName(), "Sub 1 by Epic(2)");
-        Assertions.assertEquals(manager.getSubTaskById(3).getDescription(), "New status");
-        Assertions.assertEquals(manager.getSubTaskById(3).getStatus(), Status.NEW);
+        assertNull(manager.getSubTaskById(0), "Неверно возвращается несуществующий SubTask");
+        assertEquals(manager.getSubTaskById(3).getEpicTaskId(), 2);
+        assertEquals(manager.getSubTaskById(3).getName(), "Sub 1 by Epic(2)");
+        assertEquals(manager.getSubTaskById(3).getDescription(), "New status");
+        assertEquals(manager.getSubTaskById(3).getStatus(), Status.NEW);
         manager.deleteSubById(3);
         manager.clearAll();
     }
 
     @Test
     void getEpicTaskById() {
-        Assertions.assertNull(manager.getEpicTaskById(0), "Неверно возвращается несуществующий EpicTask");
-        Assertions.assertEquals(manager.getEpicTaskById(1).getName(), "Epic(1)");
-        Assertions.assertEquals(manager.getEpicTaskById(1).getDescription(), "Empty");
-        Assertions.assertEquals(manager.getEpicTaskById(1).getId(), 1);
-        Assertions.assertEquals(manager.getEpicTaskById(1).getStatus(), Status.NEW);
+        assertNull(manager.getEpicTaskById(0), "Неверно возвращается несуществующий EpicTask");
+        assertEquals(manager.getEpicTaskById(1).getName(), "Epic(1)");
+        assertEquals(manager.getEpicTaskById(1).getDescription(), "Empty");
+        assertEquals(manager.getEpicTaskById(1).getId(), 1);
+        assertEquals(manager.getEpicTaskById(1).getStatus(), Status.NEW);
         manager.deleteEpicById(1);
         manager.clearAll();
     }
 
     @Test
     void getAllTasks() {
-        Assertions.assertEquals(manager.getAllTasks().size(), 14);
+        assertEquals(manager.getAllTasks().size(), 14);
         manager.clearAll();
     }
 
     @Test
     void getAllSingleTasks() {
-        Assertions.assertEquals(manager.getAllSingleTasks().size(), 1);
+        assertEquals(manager.getAllSingleTasks().size(), 1);
         manager.clearAll();
     }
 
     @Test
     void getAllSubTasks() {
-        Assertions.assertEquals(manager.getAllSubTasks().size(), 8);
+        assertEquals(manager.getAllSubTasks().size(), 8);
         manager.clearAll();
     }
 
     @Test
     void getAllEpicTasks() {
-        Assertions.assertEquals(manager.getAllEpicTasks().size(), 5);
+        assertEquals(manager.getAllEpicTasks().size(), 5);
         manager.clearAll();
     }
 
     @Test
     void getSubFromEpic() {
         EpicTask epic = manager.getEpicTaskById(2);
-        Assertions.assertEquals(manager.getSubFromEpic(epic).size(), 2);
+        assertEquals(manager.getSubFromEpic(epic).size(), 2);
         epic = manager.getEpicTaskById(1);
-        Assertions.assertTrue(manager.getSubFromEpic(epic).isEmpty());
+        assertTrue(manager.getSubFromEpic(epic).isEmpty());
         manager.clearAll();
     }
 
     @Test
     void getEpicFromSub() {
         SubTask sub = manager.getSubTaskById(3);
-        Assertions.assertEquals(manager.getEpicFromSub(sub).getId(), 2);
+        assertEquals(manager.getEpicFromSub(sub).getId(), 2);
         sub = manager.getSubTaskById(6);
-        Assertions.assertEquals(manager.getEpicFromSub(sub).getId(), 5);
+        assertEquals(manager.getEpicFromSub(sub).getId(), 5);
         manager.clearAll();
     }
 
     @Test
     void deleteSingleById() {
         manager.deleteSingleById(14);
-        Assertions.assertNull(manager.getSingleTaskById(14), "Неверно удаляет single");
+        assertNull(manager.getSingleTaskById(14), "Неверно удаляет single");
         manager.clearAll();
     }
 
     @Test
     void deleteSubById() {
         manager.deleteSubById(6);
-        Assertions.assertNull(manager.getSubTaskById(6), "Неверно удаляет sub");
+        assertNull(manager.getSubTaskById(6), "Неверно удаляет sub");
         manager.clearAll();
     }
 
     @Test
     void deleteEpicById() {
         manager.deleteEpicById(5);
-        Assertions.assertNull(manager.getEpicTaskById(5), "Неверно удаляет epic");
-        Assertions.assertNull(manager.getSubTaskById(6), "Не удаляет sub после удаления epic");
-        Assertions.assertNull(manager.getSubTaskById(7), "Не удаляет sub после удаления epic");
+        assertNull(manager.getEpicTaskById(5), "Неверно удаляет epic");
+        assertNull(manager.getSubTaskById(6), "Не удаляет sub после удаления epic");
+        assertNull(manager.getSubTaskById(7), "Не удаляет sub после удаления epic");
         manager.clearAll();
     }
 
     @Test
     void clearSubTasks() {
         manager.clearSubTasks();
-        Assertions.assertTrue(manager.getAllSubTasks().isEmpty());
+        assertTrue(manager.getAllSubTasks().isEmpty());
         manager.clearAll();
     }
 
     @Test
     void clearSingleTasks() {
         manager.clearSingleTasks();
-        Assertions.assertTrue(manager.getAllSingleTasks().isEmpty());
+        assertTrue(manager.getAllSingleTasks().isEmpty());
         manager.clearAll();
     }
 
     @Test
     void clearEpicTasks() {
         manager.clearEpicTasks();
-        Assertions.assertTrue(manager.getAllEpicTasks().isEmpty());
+        assertTrue(manager.getAllEpicTasks().isEmpty());
         manager.clearAll();
     }
 
     @Test
     void clearAll() {
         manager.clearAll();
-        Assertions.assertTrue(manager.getAllTasks().isEmpty());
+        assertTrue(manager.getAllTasks().isEmpty());
     }
 
 }

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.EpicTask;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class EpicTaskTest {
 
     private final InMemoryTaskManager manager;
@@ -35,7 +37,7 @@ class EpicTaskTest {
     @Test
     public void emptyEpicTest() {
         EpicTask epicTask = manager.getEpicTaskById(1);
-        Assertions.assertEquals(epicTask.getSizeSubTasks(), 0);
+        assertEquals(epicTask.getSizeSubTasks(), 0);
         manager.clearAll();
     }
 
@@ -44,9 +46,9 @@ class EpicTaskTest {
         EpicTask epicTask = manager.getEpicTaskById(2);
         for (Integer idSubTask : epicTask.getSubTasks()) {
             Status statusSub = manager.getSubTaskById(idSubTask).getStatus();
-            Assertions.assertEquals(statusSub, Status.NEW);
+            assertEquals(statusSub, Status.NEW);
         }
-        Assertions.assertEquals(epicTask.getStatus(), Status.NEW, "Epic status not NEW");
+        assertEquals(epicTask.getStatus(), Status.NEW, "Epic status not NEW");
         manager.clearAll();
     }
 
@@ -57,9 +59,9 @@ class EpicTaskTest {
         manager.updateSubStatus(manager.getSubTaskById(7), Status.DONE);
         for (Integer idSubTask : epicTask.getSubTasks()) {
             Status statusSub = manager.getSubTaskById(idSubTask).getStatus();
-            Assertions.assertEquals(statusSub, Status.DONE);
+            assertEquals(statusSub, Status.DONE);
         }
-        Assertions.assertEquals(epicTask.getStatus(), Status.DONE, "Epic status not DONE");
+        assertEquals(epicTask.getStatus(), Status.DONE, "Epic status not DONE");
         manager.clearAll();
     }
 
@@ -67,7 +69,7 @@ class EpicTaskTest {
     public void newAndDoneEpicTest() {
         EpicTask epicTask = manager.getEpicTaskById(8);
         manager.updateSubStatus(manager.getSubTaskById(10), Status.DONE);
-        Assertions.assertEquals(epicTask.getStatus(), Status.IN_PROGRESS, "Epic status not IN_PROGRESS");
+        assertEquals(epicTask.getStatus(), Status.IN_PROGRESS, "Epic status not IN_PROGRESS");
         manager.clearAll();
     }
 
@@ -75,7 +77,7 @@ class EpicTaskTest {
     public void inProgressEpicTest() {
         EpicTask epicTask = manager.getEpicTaskById(11);
         manager.updateSubStatus(manager.getSubTaskById(13), Status.IN_PROGRESS);
-        Assertions.assertEquals(epicTask.getStatus(), Status.IN_PROGRESS, "Epic status not IN_PROGRESS");
+        assertEquals(epicTask.getStatus(), Status.IN_PROGRESS, "Epic status not IN_PROGRESS");
         manager.clearAll();
     }
 }
