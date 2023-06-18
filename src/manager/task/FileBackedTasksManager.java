@@ -1,7 +1,7 @@
 package manager.task;
 
 import enums.Status;
-import manager.history.InMemoryHistoryManager;
+import manager.history.HistoryManager;
 import tasks.EpicTask;
 import tasks.SingleTask;
 import tasks.SubTask;
@@ -16,7 +16,7 @@ import static enums.Status.*;
 import static java.lang.Integer.parseInt;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    public FileBackedTasksManager(InMemoryHistoryManager historyManager) {
+    public FileBackedTasksManager(HistoryManager historyManager) {
         super(historyManager);
     }
 
@@ -192,6 +192,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String separator = File.separator;
         File file = new File(absPath + separator + fileName);
         loadFromFile(file);
+    }
+
+    @Override
+    public void addTask(SingleTask task) {
+        super.addTask(task);
+    }
+
+    @Override
+    public void addSubTask(SubTask task) {
+        super.addSubTask(task);
+    }
+
+    @Override
+    public void addEpicTask(EpicTask task) {
+        super.addEpicTask(task);
     }
 
     private static void loadFromFile(File file) {

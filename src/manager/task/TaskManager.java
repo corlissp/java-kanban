@@ -36,4 +36,7 @@ public interface TaskManager {
     List<Task> getHistory();
     boolean isTimeFree(String time);
     Set<Task> getPrioritizedTasks();
+    void addTask(SingleTask task);
+    void addSubTask(SubTask task);
+    void addEpicTask(EpicTask task);
 }

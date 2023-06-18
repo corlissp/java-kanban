@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 public abstract class Task implements Comparable<LocalDateTime>{
     protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
-    private final int id;
+    private int id;
     private final String name;
     protected Duration duration;
     private final LocalDateTime startTime;
@@ -18,6 +18,14 @@ public abstract class Task implements Comparable<LocalDateTime>{
 
     public Task(int id, String name, Status status, String description, int durationMinutes, String startTime) {
         this.id = id;
+        this.name = name;
+        this.status = status;
+        this.description = description;
+        this.duration = Duration.ofMinutes(durationMinutes);
+        this.startTime = LocalDateTime.parse(startTime, DATE_TIME_FORMATTER);
+    }
+
+    public Task(String name, Status status, String description, int durationMinutes, String startTime) {
         this.name = name;
         this.status = status;
         this.description = description;
@@ -49,6 +57,10 @@ public abstract class Task implements Comparable<LocalDateTime>{
     }
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

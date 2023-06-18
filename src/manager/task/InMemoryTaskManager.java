@@ -1,6 +1,7 @@
 package manager.task;
 
 import enums.Status;
+import manager.history.HistoryManager;
 import manager.history.InMemoryHistoryManager;
 import tasks.EpicTask;
 import tasks.SingleTask;
@@ -17,9 +18,9 @@ public class InMemoryTaskManager implements TaskManager {
     protected static HashMap<Integer, SingleTask> singleTasks;
     protected static HashMap<Integer, SubTask> subTasks;
     protected static HashMap<Integer, EpicTask> epicTasks;
-    protected static InMemoryHistoryManager historyManager;
+    protected static HistoryManager historyManager;
 
-    public InMemoryTaskManager(InMemoryHistoryManager historyManager) {
+    public InMemoryTaskManager(HistoryManager historyManager) {
         this.taskIdGenerator = new TaskIdGenerator();
         singleTasks = new HashMap<>();
         subTasks = new HashMap<>();
@@ -254,6 +255,26 @@ public class InMemoryTaskManager implements TaskManager {
         Set<Task> set = new TreeSet<>(Comparator.comparing(Task::getStartTime));
         set.addAll(list);
         return set;
+    }
+    @Override
+    public void addTask(SingleTask task) {
+        int id = taskIdGenerator.getNextId();
+        task.setId(id);
+        singleTasks.put(id, task);
+    }
+
+    @Override
+    public void addSubTask(SubTask task) {
+        int id = taskIdGenerator.getNextId();
+        task.setId(id);
+        subTasks.put(id, task);
+    }
+
+    @Override
+    public void addEpicTask(EpicTask task) {
+        int id = taskIdGenerator.getNextId();
+        task.setId(id);
+        epicTasks.put(id, task);
     }
 
     public static final class TaskIdGenerator {

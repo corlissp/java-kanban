@@ -14,6 +14,10 @@ public class SingleTask extends Task {
         super(id, name, status, description);
     }
 
+    public SingleTask(String name, Status status, String description, int durationMinutes, String startTime) {
+        super(name, status, description, durationMinutes, startTime);
+    }
+
     @Override
     public void setStatus(Status status) {
         this.status = status;
