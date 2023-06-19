@@ -36,7 +36,6 @@ public class SingleTaskHandler implements HttpHandler {
                 if (query == null) {
                     statusCode = 200;
                     String jsonString = gson.toJson(taskManager.getAllTasks());
-                    System.out.println("GET TASKS: " + jsonString);
                     response = gson.toJson(jsonString);
                 } else {
                     try {

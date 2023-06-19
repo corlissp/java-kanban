@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 public class HttpTaskManager extends FileBackedTasksManager {
 
-    final static String KEY_TASKS = "task";
-    final static String KEY_SUBTASKS = "subtasks";
-    final static String KEY_EPICS = "epics";
-    final static String KEY_HISTORY = "history";
-    final KVTaskClient client;
+    private final static String KEY_TASKS = "task";
+    private final static String KEY_SUBTASKS = "subtasks";
+    private final static String KEY_EPICS = "epics";
+    private final static String KEY_HISTORY = "history";
+    private final KVTaskClient client;
     private static final Gson gson = new GsonBuilder().create();
 
     public HttpTaskManager(HistoryManager historyManager, String path) throws IOException, InterruptedException {

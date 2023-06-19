@@ -35,7 +35,6 @@ public class EpicTaskHandler implements HttpHandler {
                 if (query == null) {
                     statusCode = 200;
                     String jsonString = gson.toJson(taskManager.getAllEpicTasks());
-                    System.out.println("GET EPICS: " + jsonString);
                     response = gson.toJson(jsonString);
                 } else {
                     try {
